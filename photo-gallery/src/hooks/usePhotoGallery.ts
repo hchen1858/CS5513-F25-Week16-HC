@@ -10,6 +10,7 @@ export function usePhotoGallery() {
       resultType: CameraResultType.Uri,
       source: CameraSource.Camera,
       quality: 100,
+      webUseInput: true,
     });
 
     const fileName = Date.now() + '.jpeg';
