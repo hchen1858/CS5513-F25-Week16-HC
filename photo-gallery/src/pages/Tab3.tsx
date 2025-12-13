@@ -1,6 +1,6 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonListHeader, IonItem, IonLabel } from '@ionic/react';
 import React, { useState, useEffect } from 'react';
-import ExploreContainer from '../components/ExploreContainer';
+//import ExploreContainer from '../components/ExploreContainer';
 import './Tab3.css';
 
 interface CatFoodItem {
@@ -12,6 +12,15 @@ interface CatFoodItem {
     food_cost: string;
   };
 }
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+};
 
 
 const Tab3: React.FC = () => {
@@ -34,16 +43,15 @@ const Tab3: React.FC = () => {
       </IonHeader>
       <IonContent fullscreen>
         <IonList id="food-list">
-          <IonListHeader>Cat Food Reviews</IonListHeader>  
+          {/* <IonListHeader>Cat Food Reviews</IonListHeader>   */}
           {dataset.map((item, index) => (
             <IonItem lines="inset" key={index}>
-              <IonLabel>
-                <h4>{item.acf.food_name}</h4>
-                <p>{item.date}</p>                
-                <p>{item.acf.food_description}</p>
-                <p>{item.acf.rating}</p>
-                <p>{item.acf.food_cost}</p>
-                
+              <IonLabel id="food-label">
+                <h1>{item.acf.food_name}</h1>
+                <p>{formatDate(item.date)}</p>                
+                <p><strong>Description: </strong>{item.acf.food_description}</p>
+                <p><strong>Rating: </strong>{item.acf.rating}</p>
+                <p><strong>Cost: </strong>{item.acf.food_cost}</p>                
               </IonLabel>
             </IonItem>  
           ))}
