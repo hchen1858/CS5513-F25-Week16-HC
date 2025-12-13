@@ -1,0 +1,89 @@
+
+import React, { useCallback, useState } from 'react';
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonImg,
+  IonFab,
+  IonFabButton,
+  IonIcon,
+} from '@ionic/react';
+import { add } from 'ionicons/icons';
+
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+
+/**
+ * Tab2: Simple photo capture & preview (web/iOS/Android)
+ *
+ * ✅ Uses Capacitor Camera API. On the web, this automatically
+ *    shows the PWA camera modal provided by @ionic/pwa-elements.
+ * ✅ No direct instantiation or mutation of pwa-camera-modal.
+ * ✅ Prevents "Cannot read properties of undefined ('$instanceValues$')" errors.
+ */
+const Tab2: React.FC = () => {
+  const [photos, setPhotos] = useState<string[]>([]);
+
+  const addPhotoToGallery = useCallback(async () => {
+    try {
+      const photo = await Camera.getPhoto({
+        resultType: CameraResultType.Uri,   // web-friendly result
+        source: CameraSource.Camera,        // open device camera
+        quality: 100,
+        // Note: Facing mode is handled internally by PWA Elements on web.
+        // Avoid manually setting properties on the underlying modal component.
+      });
+
+      // Prefer webPath on web; fallback to path if present
+      const uri = photo.webPath ?? photo.path;
+      if (uri) {
+        setPhotos(prev => [uri, ...prev]);
+      } else {
+        console.warn('No URI returned by Camera.getPhoto()', photo);
+      }
+    } catch (err) {
+      // Camera permission denied or device has no camera, etc.
+      console.error('Camera error:', err);
+    }
+  }, []);
+
+  return (
+    <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Photo Gallery</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+
+      <IonContent fullscreen>
+        <IonGrid>
+          <IonRow>
+            {photos.length === 0 ? (
+              <IonCol size="12" className="ion-text-center ion-padding">
+                <p>No photos yet. Tap the + button to take one.</p>
+              </IonCol>
+            ) : (
+              photos.map((src, idx) => (
+                <IonCol key={idx} size="6" sizeMd="4">
+                  <IonImg src={src} alt={`Photo ${idx + 1}`} />
+                </IonCol>
+              ))
+            )}
+          </IonRow>
+        </IonGrid>
+
+        <IonFab vertical="bottom" horizontal="end" slot="fixed">
+          <IonFabButton onClick={addPhotoToGallery} aria-label="Take Photo">
+            <IonIcon icon={add} />
+          </IonFabButton>
+        </IonFab>
+      </IonContent>
+    </IonPage>
+  );
+};
+

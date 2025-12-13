@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "@capacitor/camera": "^8.0.0",
     "@ionic/cli": "^7.2.1",
+    "@ionic/pwa-elements": "^3.3.0",
     "cordova-res": "^0.15.4",
     "native-run": "^2.0.1"
   }
